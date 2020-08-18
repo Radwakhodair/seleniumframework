@@ -8,7 +8,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
@@ -48,7 +51,26 @@ public static String downloadpath=System.getProperty("user.dir")+"\\downloads";
 			driver=new FirefoxDriver();
 			
 		}
-	
+		//headless browser testing
+		else if (browserName.equalsIgnoreCase("headless"))
+		{
+			DesiredCapabilities caps =new DesiredCapabilities();
+			caps.setJavascriptEnabled(true);
+			caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, System.getProperty("user.dir")+"/drivers/phantomjs.exe");
+			
+			String[] phantomjaArgs= {"--Web-security=no","--ignore-ssl--errors=yes"};
+			caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS,phantomjaArgs );
+			driver=new PhantomJSDriver(caps);
+		}
+		else if (browserName.equalsIgnoreCase("chrome-headless")) {
+			System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+"/drivers/chromedriver.exe");
+			ChromeOptions options=new ChromeOptions();
+			options.addArguments("--headless");
+			options.addArguments("--window-size=1920,1080");
+			driver=new ChromeDriver(options);
+			
+		}
+		
 		
 		driver.manage().timeouts().implicitlyWait(120, TimeUnit.SECONDS);
 		driver.navigate().to("https://demo.nopcommerce.com/");
